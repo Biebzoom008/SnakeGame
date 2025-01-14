@@ -7,7 +7,7 @@ class Grid (){
   class Snake () {
     val position: Array[Int] = Array(7,10)
     var up : Boolean = false
-    var down : Boolean =  false
+    var down : Boolean =  true
     var right : Boolean = false
     var left : Boolean = false
 
@@ -28,7 +28,7 @@ class Grid (){
   val numCellsY : Int = height/cellSize
 
   //elements in the grid
-  val gridElement : Array[Array[Int]] = Array.fill(15,15)(1)
+  val gridElement : Array[Array[Int]] = Array.fill(15,15)(0)
 
 
   //Colors used in the program
@@ -51,28 +51,24 @@ class Grid (){
     override def keyPressed(e: KeyEvent): Unit = {
       if (e.getKeyChar == 'a') println("The key 'A' was pressed")
       if (e.getKeyCode == KeyEvent.VK_RIGHT && snake.position(0)< 15) {
-        snake.position(0) += 1
         snake.left = false
         snake.down = false
         snake.up = false
         snake.right = true
       }
       if (e.getKeyCode == KeyEvent.VK_LEFT && snake.position(0)> 1) {
-        snake.position(0) -= 1
         snake.down = false
         snake.up = false
         snake.right = false
         snake.left = true
       }
       if (e.getKeyCode == KeyEvent.VK_UP && snake.position(1)>4) {
-        snake.position(1) -= 1
         snake.left = false
         snake.down = false
         snake.right = false
         snake.up = true
       }
       if (e.getKeyCode == KeyEvent.VK_DOWN && snake.position(1)<18) {
-        snake.position(1) += 1
         snake.left = false
         snake.up = false
         snake.right = false
@@ -141,16 +137,23 @@ class Grid (){
     } else if (snake.left==true &&snake.position(0)> 1){
       snake.position(0) -= 1
     }
-
+    gridElement(snake.position(0)-1)(snake.position(1)-4) +=2       //Important that the lowest value possible is 2 so that when it does -1 the snake head still shows
+                                                                    //It's that way because of the order of the methods
   }
 
   def drawGame() : Unit = {
-    display.drawForeground()
-    gridElement(snake.position(0))(snake.position(1)) +=1
     for(x <- gridElement.indices){
       for (y <- gridElement(x).indices){
         if (gridElement(x)(y)>1){
-          drawCell(x+cornerSize,y+headerSize+1,blue)
+          drawCell(x+cornerSize,y+headerSize+1,blue)    //draws the snake in the cells where the value is higher than 0
+        }
+        if (gridElement(x)(y)>0) {      //>0 so that no cell value ever goes under 0
+          gridElement(x)(y) -= 1
+        }
+        if (gridElement(x)(y) == 0 && ((x + y) % 2 == 0) ){     //alternates the color of the cells and draws them where the cell's value is 0
+          drawCell(x + cornerSize, y + headerSize + 1, lightGreen)
+        } else if (gridElement(x)(y) == 0 && !((x + y) % 2 == 0)){
+          drawCell(x + cornerSize, y + headerSize + 1, green)
         }
       }
     }
