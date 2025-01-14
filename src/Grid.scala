@@ -11,6 +11,10 @@ class Grid (){
     var right : Boolean = false
     var left : Boolean = false
     var size : Int = 5
+  }
+
+  class Food {
+    val foodGrid : Array [Array[Int]] = Array.fill(15,15)(0)
 
   }
 
