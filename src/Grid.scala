@@ -2,6 +2,7 @@ import hevs.graphics.FunGraphics
 
 import java.awt.Color
 import java.awt.event.{KeyAdapter, KeyEvent}
+import java.util.Random
 
 class Grid (){
   class Snake () {
@@ -10,11 +11,32 @@ class Grid (){
     var down : Boolean =  true
     var right : Boolean = false
     var left : Boolean = false
-    var size : Int = 5
+    var size : Int = 1
   }
 
   class Food {
     val foodGrid : Array [Array[Int]] = Array.fill(15,15)(0)
+
+    def eat() : Unit = {
+      if (foodGrid(snake.position(0)-1)(snake.position(1)-4) == 1){
+        snake.size +=1
+        foodGrid(snake.position(0)-1)(snake.position(1)-4) = 0
+      }
+    }
+
+    var foodTimer : Int = 0
+
+    def createFood() : Unit = {
+      var randomX : Int = (Math.random()*15).toInt
+      var randomY : Int = (Math.random()*15).toInt
+      foodTimer += 1
+      if (foodTimer > 10 && gridElement(randomX)(randomY) == 0 && foodGrid(randomX)(randomY) == 0){
+        foodTimer = 0
+
+        display.drawTransformedPicture(cornerSize * 30 + randomX*cellSize + 15, headerSize * 30 + randomY*cellSize + 45, 0, 0.05, "/res/strawberry.png")
+        foodGrid(randomX)(randomY) = 1
+      }
+    }
 
   }
 
@@ -42,12 +64,13 @@ class Grid (){
   val green : Color = new Color (157, 201, 82)
   val backgroundGreen : Color = new Color(100, 136, 64)
   val headerGreen : Color = new Color(85, 115, 54)
-  val transparent : Color = new Color(255,255,255,0)
 
 
   //Creation of the display here to make everything cleaner
+  //Creation of the snake and food objects
   val display : FunGraphics = new FunGraphics(width, height)
   val snake : Snake = new Snake ()
+  val food : Food = new Food ()
 
 
   //if condition to stop the snake from going outside the grid
@@ -161,9 +184,9 @@ class Grid (){
         if (gridElement(x)(y)>0) {      //>0 so that no cell value ever goes under 0
           gridElement(x)(y) -= 1
         }
-        if (gridElement(x)(y) == 0 && ((x + y) % 2 == 0) ){     //alternates the color of the cells and draws them where the cell's value is 0
+        if (gridElement(x)(y) == 0 && ((x + y) % 2 == 0 && food.foodGrid(x)(y)==0) ){     //alternates the color of the cells and draws them where the cell's value is 0
           drawCell(x + cornerSize, y + headerSize + 1, lightGreen)
-        } else if (gridElement(x)(y) == 0 && !((x + y) % 2 == 0)){
+        } else if (gridElement(x)(y) == 0 && !((x + y) % 2 == 0) && food.foodGrid(x)(y)==0){
           drawCell(x + cornerSize, y + headerSize + 1, green)
         }
       }
