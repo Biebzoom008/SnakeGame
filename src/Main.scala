@@ -1,5 +1,4 @@
-import java.awt.Color
-import hevs.graphics.FunGraphics
+
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -7,7 +6,7 @@ object Main {
 
 
     //Creation of the grid and the snake
-    var grid : Grid = new Grid ()
+    val grid : Grid = new Grid ()
 
 
 
@@ -20,10 +19,10 @@ object Main {
     grid.display.drawTransformedPicture(grid.cornerSize*30, grid.headerSize*30,0,0.05,"/res/strawberry.png")
     grid.display.drawTransformedPicture(grid.cornerSize*30*3, grid.headerSize*30*3,0,0.05,"/res/weirdStraw.jpg")
     grid.display.syncGameLogic(60)
-    while(true){
 
+    while(true){
       grid.move()
-      grid.drawGame
+      grid.drawGame()
       Thread.sleep(700)
 
     }

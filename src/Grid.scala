@@ -10,6 +10,7 @@ class Grid (){
     var down : Boolean =  true
     var right : Boolean = false
     var left : Boolean = false
+    var size : Int = 5
 
   }
 
@@ -76,6 +77,8 @@ class Grid (){
       }
     }
   })
+  //TODO Implement "death" when bumping into a corner
+  //TODO Implement "death" when bumping into itself
 
 
 
@@ -137,9 +140,13 @@ class Grid (){
     } else if (snake.left==true &&snake.position(0)> 1){
       snake.position(0) -= 1
     }
-    gridElement(snake.position(0)-1)(snake.position(1)-4) +=2       //Important that the lowest value possible is 2 so that when it does -1 the snake head still shows
-                                                                    //It's that way because of the order of the methods
+    gridElement(snake.position(0)-1)(snake.position(1)-4) += snake.size + 1
+    //Important that the lowest value possible is 2 so that when it does -1 the snake head still shows
+    //It's that way because of the order of the methods
+    //Size of snake = x-1
   }
+
+  //TODO Add the food system that increases the snake size
 
   def drawGame() : Unit = {
     for(x <- gridElement.indices){
