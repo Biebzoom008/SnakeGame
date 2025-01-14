@@ -15,8 +15,15 @@ object Main {
     grid.drawBackGround(grid.backgroundGreen)
     grid.drawHeader(grid.headerGreen)
 
+    grid.drawGrid()
+
+
+    grid.display.syncGameLogic(60)
     while(true){
-     grid.drawGrid()
+      Thread.sleep(1000)
+      grid.move()
+      grid.drawCell(grid.snake.position(0),grid.snake.position(1),grid.blue)
+
     }
   }
 
