@@ -12,6 +12,7 @@ class Grid (){
     var right : Boolean = false
     var left : Boolean = false
     var size : Int = 1
+    var score : Int = 0
   }
 
   class Food {
@@ -20,6 +21,7 @@ class Grid (){
     def eat() : Unit = {
       if (foodGrid(snake.position(0)-1)(snake.position(1)-4) == 1){
         snake.size +=1
+        snake.score +=1
         foodGrid(snake.position(0)-1)(snake.position(1)-4) = 0
       }
     }
@@ -198,10 +200,14 @@ class Grid (){
     }
   }
 
+  def scoreDisplay () : Unit = {
+    display.drawString(width/6,height/6, s"This is your score : ${snake.score}", blue, 20)
+  }
 
   def deathScreen() : Unit = {
     display.clear()
     display.drawString(width/4,height/2, "YOU DIEDDDDD", blue, 20)
+    scoreDisplay()
   }
 
 

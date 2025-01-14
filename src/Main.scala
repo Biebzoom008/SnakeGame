@@ -23,23 +23,16 @@ object Main {
     try{while(!grid.tailDeath){
       grid.move()
       grid.drawGame()
-
       grid.food.createFood()
       grid.food.eat()
-      println(s"${grid.snake.position(0)} and ${grid.snake.position(1)}")
       Thread.sleep(300)
-      } }catch {
+      }
+    } catch {
       case e : ArrayIndexOutOfBoundsException => grid.deathScreen()
     }
 
     grid.deathScreen()
     }
-
-
-
-
-
-
 
 }
 
