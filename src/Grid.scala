@@ -8,8 +8,8 @@ class Grid (){
   class Snake () {
     val position: Array[Int] = Array(7,10)
     var up : Boolean = false
-    var down : Boolean =  true
-    var right : Boolean = false
+    var down : Boolean =  false
+    var right : Boolean = true
     var left : Boolean = false
     var size : Int = 1
     var score : Int = 0
@@ -32,13 +32,13 @@ class Grid (){
 
     var foodTimer : Int = 0
 
+
     def createFood() : Unit = {
       var randomX : Int = (Math.random()*15).toInt
       var randomY : Int = (Math.random()*15).toInt
       foodTimer += 1
-      if (foodTimer > 1 && gridElement(randomX)(randomY) == 0 && foodGrid(randomX)(randomY) == 0){
+      if (((foodGrid(snake.position(0)-1)(snake.position(1)-4) == 1) || (foodGrid(snake.position(0)-1)(snake.position(1)-4) == 2)) && gridElement(randomX)(randomY) == 0 && foodGrid(randomX)(randomY) == 0){
         foodTimer = 0
-
         display.drawTransformedPicture(cornerSize * 30 + randomX*cellSize + 15, headerSize * 30 + randomY*cellSize + 45, 0, 0.05, "/res/strawberry.png")
         foodGrid(randomX)(randomY) = 1
       } else if (foodGrid(randomX)(randomY)==1){
@@ -54,7 +54,6 @@ class Grid (){
   //Size of the display
   val width : Int = 512
   val height : Int = 600
-  val hi : Int = 2
   val cellSize : Int = 30
 
   //Size of header and space on the sides. Size in number of cells it represents
@@ -213,8 +212,9 @@ class Grid (){
     }
   }
 
+
   def scoreDisplay () : Unit = {
-    display.drawString(width/6,height/6, s"This is your score : ${snake.score}", blue, 20)
+    display.drawString(width/6,height/8, s"This is your score : ${snake.score}","Arial",Font.PLAIN,20, blue)
   }
 
   def deathScreen() : Unit = {
@@ -223,5 +223,11 @@ class Grid (){
     scoreDisplay()
   }
 
+
+  //TODO Start screen (mouse control)
+  //TODO Death screen revamped and restart option
+  //TODO Settings
+  //TODO Music (?)
+  //TODO Sound effects
 
 }
