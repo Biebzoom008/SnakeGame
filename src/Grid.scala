@@ -144,15 +144,23 @@ class Grid (){
       println(s"Mouse position $posX - $posY")
 
       // Starts the game if START is clicked
-      if (( posX > 170  && posX < 305) && (  posY < 300 && posY > 270)){
-        display.clear()
+      if ((( posX > 170  && posX < 305) && (  posY < 300 && posY > 270)) && playing == false){
         playing = true
+      }
+      if ((( posX > 170  && posX < 305) && (  posY < 300 && posY > 270)) && restartScreen == true){
+        restartScreen = false
+        playing = true
+        snake.position(0) = 7
+        snake.position(1) = 10
+        snake.score = 0
+        snake.size = 1
       }
     }
   })
 
   var gameRunning : Boolean = true
   var playing : Boolean = false
+  var restartScreen : Boolean = false
 
 
   var tailDeath : Boolean = false
@@ -264,7 +272,7 @@ class Grid (){
   }
 
   def deathScreen() : Unit = {
-    gameRunning = false
+    playing = false
     display.drawBackground()
     drawBackGround(backgroundGreenT)
     drawGrid(greenT, lightGreenT)
@@ -273,60 +281,14 @@ class Grid (){
     drawHeader(headerGreenT)
     display.drawString(width/4,height/2, "YOU DIEDDDDD", blue, 20)
     scoreDisplay(headerGreenT)
+
+    Thread.sleep(5000)
+    restartScreen = true
   }
 
-  def menuScreen () : Unit = {
-    for (x <- 0 until width){
-      for (y <- 0 until height) {
-        display.setPixel(x,y,backgroundGreen)
-      }
-    }
-    display.drawString(width/4 + 45,height/2,"START",blue,40)
-  }
-
-  def game () : Unit = {
 
 
-    //Drawing the background and header
-    display.drawBackground()
-    drawBackGround(backgroundGreen)
-    drawGrid(green, lightGreen)
 
-    //Creates a first strawberry in a random position
-    var randomX : Int = (Math.random()*15).toInt
-    var randomY : Int = ((Math.random()*15).toInt)
-    drawEmpty(randomX,randomY)
-    food.foodGrid(randomX)(randomY)= 1
-
-    display.drawForeground()
-    display.drawTransformedPicture(cornerSize * 30 + randomX*cellSize + 15, headerSize * 30 + randomY*cellSize + 45, 0, 0.05, "/res/strawberry.png")
-    drawHeader(headerGreen)
-    scoreDisplay(headerGreen)
-    display.drawForeground()
-
-
-    try{while(!tailDeath){
-      move()
-      drawGame()
-      println(s"${snake.position(0)} and ${snake.position(1)}")
-      var random : Int = (Math.random()*5).toInt
-
-      if(random > 1){
-        food.createFood()
-      } else {
-        food.createFood2()
-
-      }
-      food.eat()
-
-
-      Thread.sleep(300)
-    }
-      deathScreen()
-    } catch {
-      case e : ArrayIndexOutOfBoundsException => deathScreen()
-    }
-  }
 
   //TODO Start screen (mouse control)
   //TODO Death screen revamped and restart option

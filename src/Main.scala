@@ -6,6 +6,7 @@ object Main {
 
     //Creation of the grid and the snake
     val grid : Grid = new Grid ()
+
     while (grid.gameRunning) {
       menuScreen()
       if (grid.playing == true){
@@ -13,7 +14,12 @@ object Main {
       } else while (grid.playing == false) {
         Thread.sleep(1000)
       }
+      while (grid.playing == true){}
+      restartScreen()
+      while (grid.restartScreen == true){
+      }
     }
+
     Thread.sleep(10000)
     sys.exit()
     def menuScreen () : Unit = {
@@ -25,6 +31,15 @@ object Main {
       grid.display.drawString(grid.width/4 + 45,grid.height/2,"START",grid.blue,40)
     }
 
+    def restartScreen () : Unit = {
+      for (x <- 0 until grid.width){
+        for (y <- 0 until grid.height) {
+          grid.display.setPixel(x,y,grid.backgroundGreen)
+        }
+      }
+      grid.display.drawString(grid.width/4 + 45,grid.height/2,"RESTART",grid.blue,40)
+      grid.restartScreen = true
+    }
     def game () : Unit = {
 
       //Drawing the background and header
