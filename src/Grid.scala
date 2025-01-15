@@ -1,7 +1,7 @@
 import hevs.graphics.FunGraphics
 
 import java.awt.{Color, Font}
-import java.awt.event.{KeyAdapter, KeyEvent}
+import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent}
 import java.util.Random
 
 class Grid (){
@@ -23,10 +23,13 @@ class Grid (){
         snake.size +=1
         snake.score +=1
         foodGrid(snake.position(0)-1)(snake.position(1)-4) = 0
+        scoreDisplay(headerGreen)
+
       } else if (foodGrid(snake.position(0)-1)(snake.position(1)-4) == 2){
         snake.size += 2
         snake.score += 5
         foodGrid(snake.position(0)-1)(snake.position(1)-4) = 0
+        scoreDisplay(headerGreen)
       }
     }
 
@@ -39,6 +42,7 @@ class Grid (){
       if (((foodGrid(snake.position(0)-1)(snake.position(1)-4) == 1) || (foodGrid(snake.position(0)-1)(snake.position(1)-4) == 2)) && gridElement(randomX)(randomY) == 0 && foodGrid(randomX)(randomY) == 0){
         display.drawTransformedPicture(cornerSize * 30 + randomX*cellSize + 15, headerSize * 30 + randomY*cellSize + 45, 0, 0.05, "/res/strawberry.png")
         foodGrid(randomX)(randomY) = 1
+
       }
     }
 
@@ -49,6 +53,7 @@ class Grid (){
         drawEmpty(randomX,randomY)
         display.drawTransformedPicture(cornerSize * 30 + randomX*cellSize + 15, headerSize * 30 + randomY*cellSize + 45, 0, 0.175, "/res/Goldberry_ingame.png")
         foodGrid(randomX)(randomY) = 2
+
       }
     }
 
@@ -127,8 +132,31 @@ class Grid (){
   })
 
 
+  //Mouse checker for menu
+  display.addMouseListener(new MouseAdapter() {
+    override def mouseClicked(e: MouseEvent): Unit = {
+      val event = e
+
+      // Get the mouse position from the event
+      val posX = event.getX
+      val posY = event.getY
+
+      println(s"Mouse position $posX - $posY")
+
+      // Starts the game if START is clicked
+      if (( posX > 170  && posX < 305) && (  posY < 300 && posY > 270)){
+        display.clear()
+        playing = true
+      }
+    }
+  })
+
+  var gameRunning : Boolean = true
+  var playing : Boolean = false
+
 
   var tailDeath : Boolean = false
+  //Used to "die" when the snake moves into its tail
 
 
   //Function that draws a cell of size cellSize starting at the position (x,y) and of color c
@@ -159,8 +187,8 @@ class Grid (){
         display.setPixel(x, y, c)
       }
     }
-    display.drawTransformedPicture(width/4, headerSize*cellSize/2, 0, 0.05, "/res/strawberry.png")
-    scoreDisplay()
+    display.drawTransformedPicture(width/2, (headerSize)*cellSize/2, 0, 0.05, "/res/strawberry.png")
+    display.drawString(width/2,(headerSize+1)*cellSize/2 - 6, s"This is your score :","Arial",Font.PLAIN,20, blue)
   }
 
 
@@ -226,23 +254,79 @@ class Grid (){
   }
 
 
-  def scoreDisplay () : Unit = {
-    display.drawString(width/6,height/8, s"This is your score : ${snake.score}","Arial",Font.PLAIN,20, blue)
-    display.drawTransformedPicture(width/4, headerSize*cellSize/2, 0, 0.05, "/res/strawberry.png")
+  def scoreDisplay (c : Color) : Unit = {
+    for (x <-width/2 + cellSize*6 - 15 to width - 30){
+      for (y <-(headerSize+1)*cellSize/4 - 5 to headerSize*cellSize - 1){
+        display.setPixel(x,y,c)
+      }
+    }
+    display.drawString(width/2 + cellSize*6,(headerSize+1)*cellSize/2 - 5, s"${snake.score}","Arial",Font.PLAIN,20, blue)
   }
 
   def deathScreen() : Unit = {
-
+    gameRunning = false
     display.drawBackground()
     drawBackGround(backgroundGreenT)
     drawGrid(greenT, lightGreenT)
-    drawHeader(headerGreenT)
 
     display.drawForeground()
+    drawHeader(headerGreenT)
     display.drawString(width/4,height/2, "YOU DIEDDDDD", blue, 20)
-    scoreDisplay()
+    scoreDisplay(headerGreenT)
   }
 
+  def menuScreen () : Unit = {
+    for (x <- 0 until width){
+      for (y <- 0 until height) {
+        display.setPixel(x,y,backgroundGreen)
+      }
+    }
+    display.drawString(width/4 + 45,height/2,"START",blue,40)
+  }
+
+  def game () : Unit = {
+
+
+    //Drawing the background and header
+    display.drawBackground()
+    drawBackGround(backgroundGreen)
+    drawGrid(green, lightGreen)
+
+    //Creates a first strawberry in a random position
+    var randomX : Int = (Math.random()*15).toInt
+    var randomY : Int = ((Math.random()*15).toInt)
+    drawEmpty(randomX,randomY)
+    food.foodGrid(randomX)(randomY)= 1
+
+    display.drawForeground()
+    display.drawTransformedPicture(cornerSize * 30 + randomX*cellSize + 15, headerSize * 30 + randomY*cellSize + 45, 0, 0.05, "/res/strawberry.png")
+    drawHeader(headerGreen)
+    scoreDisplay(headerGreen)
+    display.drawForeground()
+
+
+    try{while(!tailDeath){
+      move()
+      drawGame()
+      println(s"${snake.position(0)} and ${snake.position(1)}")
+      var random : Int = (Math.random()*5).toInt
+
+      if(random > 1){
+        food.createFood()
+      } else {
+        food.createFood2()
+
+      }
+      food.eat()
+
+
+      Thread.sleep(300)
+    }
+      deathScreen()
+    } catch {
+      case e : ArrayIndexOutOfBoundsException => deathScreen()
+    }
+  }
 
   //TODO Start screen (mouse control)
   //TODO Death screen revamped and restart option
