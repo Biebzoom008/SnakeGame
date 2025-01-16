@@ -14,10 +14,7 @@ object Main {
       } else while (grid.playing == false) {
         Thread.sleep(1000)
       }
-      while (grid.playing == true){}
-      restartScreen()
-      while (grid.restartScreen == true){
-      }
+
     }
 
     Thread.sleep(10000)

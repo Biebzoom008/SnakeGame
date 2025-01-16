@@ -195,7 +195,6 @@ class Grid (){
         display.setPixel(x, y, c)
       }
     }
-    display.drawTransformedPicture(width/2, (headerSize)*cellSize/2, 0, 0.05, "/res/strawberry.png")
     display.drawString(width/2,(headerSize+1)*cellSize/2 - 6, s"This is your score :","Arial",Font.PLAIN,20, blue)
   }
 
